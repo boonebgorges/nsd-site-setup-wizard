@@ -17,7 +17,7 @@ define('SSW_PLUGIN_DIR', dirname( __FILE__ ).'/');
 define('SSW_MAIN_TABLE', 'ssw_main_nsd');
 // SSW Plugin Root Dir name
 define('SSW_PLUGIN_FIXED_DIR', 'nsd-site-setup-wizard');
-// This is the slug used for the plugin's create site wizard page 
+// This is the slug used for the plugin's create site wizard page
 define('SSW_CREATE_SITE_SLUG', 'Site_Setup_Wizard');
 define('SSW_OPTIONS_PAGE_SLUG', 'Site_Setup_Wizard_Options');
 define('SSW_ANALYTICS_PAGE_SLUG', 'Site_Setup_Wizard_Analytics');
@@ -32,8 +32,8 @@ define('SSW_VERSION', '1.2.2');
 if(!class_exists('Site_Setup_Wizard_NSD')) {
 	class Site_Setup_Wizard_NSD {
 
-		/* All public variables that will be used for dynamic programming */	
-			public $multisite;		
+		/* All public variables that will be used for dynamic programming */
+			public $multisite;
 			/* Site Path variable */
 			public $path;
 
@@ -42,7 +42,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			public $wpmu_pretty_plugins_plugins_list_site_option = 'wmd_prettyplugins_plugins_custom_data';
 			public $wpmu_multisite_theme_manager_categories_site_option = 'wmd_prettythemes_themes_categories';
 			public $wpmu_multisite_theme_manager_themes_list_site_option = 'wmd_prettythemes_themes_custom_data';
-		
+
     	/*	Construct the plugin object	*/
 		public function __construct() {
 
@@ -50,7 +50,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			register_activation_hook(__FILE__, array( $this, 'ssw_activate' ) );
 			// Plugin Deactivation Hook
 			register_deactivation_hook(__FILE__, array( $this, 'ssw_deactivate' ) );
-			
+
 			/* Add action to display Create Site menu item in Site's Dashboard */
 			// add_action( 'admin_menu', array($this, 'ssw_menu'));
 			/* Add action to display Create Site menu item in Network Admin's Dashboard */
@@ -62,7 +62,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			/* Display all errors as admin message if occured */
 			add_action( 'admin_notices', array( $this, 'ssw_admin_errors' ) );
 			add_action( 'plugins_loaded', array( $this, 'ssw_find_plugins' ) );
-			
+
 			/* Include Javascripts and CSS for SSW Plugin on the backend */
 			add_action( 'admin_enqueue_scripts', array( $this, 'ssw_admin_scripts' ) );
 			/* Include Javascripts and CSS for SSW Plugin on the frontend */
@@ -84,10 +84,10 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			add_action( 'wp_ajax_nopriv_ssw_submit_form_skip', array( $this, 'ssw_create_site' ) );
 			add_action( 'wp_ajax_nopriv_ssw_check_domain_exists', array( $this, 'ssw_check_domain_exists'));
 			add_action( 'wp_ajax_nopriv_ssw_check_admin_email_exists', array( $this, 'ssw_check_admin_email_exists'));
-			
+
 			/* Add shortcode [site_setuo_wizard] to any page to display Site Setup Wizard over it */
 			add_shortcode('site_setup_wizard', array( $this, 'ssw_shortcode' ) );
-			
+
 			/* Check and store is the wordpress installation is multisite or not */
 			$this->multisite = is_multisite();
 
@@ -98,7 +98,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			global $wpdb;
 			$ssw_main_table = $wpdb->base_prefix.$tablename;
 			return $ssw_main_table;
-		} 
+		}
 
 		/* Fetch configuration options for SSW Plugin from wp_sitemeta table */
 		public function ssw_fetch_config_options() {
@@ -123,7 +123,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				wp_die("Please use valid forms to send data.");
 			}
 
-			
+
 		}
 		/* Fetch Plugin options for SSW Plugin from wp_sitemeta table */
 		public function ssw_fetch_plugin_options() {
@@ -150,7 +150,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			return $theme_options;
 		}
 
-		/* Activate the plugin	*/  
+		/* Activate the plugin	*/
 		public function ssw_activate() {
 			include(SSW_PLUGIN_DIR.'admin/ssw_activate.php');
 			include(SSW_PLUGIN_DIR.'admin/ssw_default_options.php');
@@ -202,14 +202,14 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			}
 			/* Find list of all plugins available in network when this plugin is activated */
 			$this->ssw_find_plugins();
-		} 
+		}
 
 		/*	Deactivate the plugin	*/
 		public function ssw_deactivate() {
-			/* Simply deactivate the plugin for now */			
+			/* Simply deactivate the plugin for now */
 			/*	#TODO:	NEEL PLEASE REMOVE THIS FOR PRODUCTION	*/
 			/*
-			
+
 			global $wpdb;
 			if ( !is_user_logged_in() ) {
 				wp_die( 'You must be logged in to run this script.' );
@@ -225,37 +225,37 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 			$ssw_main_table = $wpdb->base_prefix.SSW_MAIN_TABLE;
 			// Drop SSW Main Table
 			$wpdb->query( 'DROP TABLE IF EXISTS '.$ssw_main_table );
-			
+
 			*/
 
 			delete_site_option( SSW_CONFIG_OPTIONS_FOR_DATABASE );
-			
-		} 
-		
+
+		}
+
 		/*	Menu function to display Site Setup Wizard -> Create Site in Site's Dashboard	*/
 		public function ssw_menu() {
-			/*	Adding Menu item "Create Site" in Dashboard, allowing it to be displayed for all users including 
+			/*	Adding Menu item "Create Site" in Dashboard, allowing it to be displayed for all users including
 				subscribers with "read" capability and displaying it above the Dashboard with position "1.7"
 			*/
-			add_menu_page('Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG, 
+			add_menu_page('Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG,
 				array( $this, 'ssw_create_site' ), plugins_url(SSW_PLUGIN_FIXED_DIR.'/images/icon.png'), '1.38');
 		}
 
 		/*	Menu function to display Site Setup Wizard -> Create Site in the Network Admin's Dashboard	*/
 		public function ssw_network_menu() {
-			/*	Adding Menu item "Create Site" in Dashboard, allowing it to be displayed for all users including 
+			/*	Adding Menu item "Create Site" in Dashboard, allowing it to be displayed for all users including
 				subscribers with "read" capability and displaying it above the Dashboard with position "1.7"
 			*/
-			add_menu_page('Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG, 
+			add_menu_page('Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG,
 				array($this, 'ssw_create_site'), plugins_url(SSW_PLUGIN_FIXED_DIR.'/images/icon.png'), '1.38');
 			/* Adding First Sub menu item in the SSW Plugin to reflect the Create Site functionality in the sub menu */
-			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG, 
+			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard', 'Create Site', 'read', SSW_CREATE_SITE_SLUG,
 				array($this, 'ssw_create_site') );
 			/* Adding SSW Options page in the Network Dashboard below the Create Site menu item */
-			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard Options', 'Options', 'manage_network', 
+			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard Options', 'Options', 'manage_network',
 				SSW_OPTIONS_PAGE_SLUG, array($this, 'ssw_options_page') );
 			/* Adding SSW Reports page in the Network Dashboard below the Create Site menu item */
-			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard Analytics', 'Analytics', 'manage_network', 
+			add_submenu_page(SSW_CREATE_SITE_SLUG, 'Site Setup Wizard Analytics', 'Analytics', 'manage_network',
 				SSW_ANALYTICS_PAGE_SLUG, array($this, 'ssw_analytics_page') );
 		}
 
@@ -268,8 +268,8 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
                     $uploads = wp_upload_dir();
                     $upload_path = $uploads['basedir'];
                     $filename = $upload_path.'/nsd_ssw_sql_log.log';
-                    $open = fopen($filename, "a"); 
-                    $write = fputs($open,"\n".'error at ( '.date('Y-m-d H:i:s').' '. $error); 
+                    $open = fopen($filename, "a");
+                    $write = fputs($open,"\n".'error at ( '.date('Y-m-d H:i:s').' '. $error);
                     fclose($open);
               }
             }
@@ -284,11 +284,11 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
                 $upload_path = $uploads['basedir'];
                 $filename = $upload_path.'/nsd_ssw_debug_log.log';
                 $open = fopen($filename, "a");
-                $write = fputs($open,"\nFile: ".$file_name." $".$var_name." = ".print_r($value, true)); 
+                $write = fputs($open,"\nFile: ".$file_name." $".$var_name." = ".print_r($value, true));
                 fclose($open);
             }
         }
-        
+
 		/* Display all admin message errors when occurs */
 		public function ssw_admin_errors( $error ) {
 			if($error == 1000) {
@@ -312,7 +312,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
     		wp_enqueue_script( 'ssw-main-js' );
 
     		// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-			wp_localize_script( 'ssw-main-js', 'ssw_main_ajax', array( 
+			wp_localize_script( 'ssw-main-js', 'ssw_main_ajax', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				/* generate a nonce with a unique ID "ssw_ajax_nonce"
             	so that you can check it later when an AJAX request is sent */
@@ -340,7 +340,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
     		wp_enqueue_script( 'ssw-main-js' );
 
 			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-			wp_localize_script( 'ssw-main-js', 'ssw_main_ajax', array( 
+			wp_localize_script( 'ssw-main-js', 'ssw_main_ajax', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				/* generate a nonce with a unique ID "ssw_ajax_nonce"
             	so that you can check it later when an AJAX request is sent */
@@ -474,17 +474,17 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				$banned_root_site_address = $options['banned_root_site_address'];
     			$banned_site_address = $options['banned_site_address'];
     			$is_debug_mode = $options['debug_mode'];
-    			
+
     			$site_address_bucket = sanitize_key( $_POST['site_address_bucket']);
     			/**
-    			*	Replace '-' from site address since it is being used to separate a site name from site category/bucket 
+    			*	Replace '-' from site address since it is being used to separate a site name from site category/bucket
     			*/
     			$site_address = str_replace( '-', '', sanitize_key( $_POST['site_address'] ));
     			$is_banned_site = 0;
     			if( in_array($site_address_bucket, $site_address_bucket_none_value) != true  && $site_address_bucket != '' ) {
     				/* Check for banned site addresses */
     				if( in_array($site_address, $banned_site_address) != true ) {
-    					$site_exists = domain_exists( $current_blog->domain, $current_site->path.sanitize_key( $_POST['site_complete_path'] ) );		
+    					$site_exists = domain_exists( $current_blog->domain, $current_site->path.sanitize_key( $_POST['site_complete_path'] ) );
     				}
     				else {
     					$is_banned_site = 1;
@@ -493,7 +493,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
     			else {
     				/* Check for banned root site addresses and banned site addresses */
     				if( in_array($site_address, $banned_root_site_address) != true && in_array($site_address, $banned_site_address) != true ) {
-    					$site_exists = domain_exists( $current_blog->domain, $current_site->path.sanitize_key( $_POST['site_complete_path'] ) );		
+    					$site_exists = domain_exists( $current_blog->domain, $current_site->path.sanitize_key( $_POST['site_complete_path'] ) );
     				}
     				else {
     					$is_banned_site = 1;
@@ -533,7 +533,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 		        }
 		        else {
 		            /*  Find Admin's ID if current user is not going to be the admin of the site from wp_users table
-		                to store since it will be used as a parameter in wpmu_create_blog function 
+		                to store since it will be used as a parameter in wpmu_create_blog function
 		            */
 		            $admin_user_id = $wpdb->get_var( 'SELECT ID FROM '.$wpdb->base_prefix.'users WHERE user_email = \''.$admin_email.'\'' );
 		        }
@@ -550,7 +550,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				wp_die("Please use valid forms to send data.");
 			}
 		}
-		
+
 		/*	SSW Create Site function which is the main function	*/
 		public function ssw_create_site() {
 
@@ -562,20 +562,20 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 					wp_die( 'You must be logged in to run this script.' );
 				}
 				/*	Currently this plugin only supports sub directory path hence unless it supports sub domain
-					path value please do not allow users with sub domain to activate it. 
+					path value please do not allow users with sub domain to activate it.
 				*/
-				/*	If you fix the sub domain path then remember to remove this check from the final step also 
-					which calls wpmu_create_blog method to create new site 
+				/*	If you fix the sub domain path then remember to remove this check from the final step also
+					which calls wpmu_create_blog method to create new site
 				*/
 				if( is_subdomain_install() ) {
-					echo '<h2>This plugin only supports sub directory wordpress installation. Please switch 
+					echo '<h2>This plugin only supports sub directory wordpress installation. Please switch
 							to sub directory installation or contact author.</h2>';
 				}
-			
+
 			/* Fecth information of current user based on his role assigned on root site by switching to root site */
     		if ( get_current_blog_id() != 1 ) {
 				switch_to_blog(1);
-    		}			
+    		}
     		global $wpdb;
 		    /* Fetch details of current user in form of Array; wordpress global variable */
 			global $current_user;
@@ -598,7 +598,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
     		/* Restore to original blog it came from before you switched to root site in case you did */
     		restore_current_blog();
 
-			/* Site Setup Wizard implementation starts here */	
+			/* Site Setup Wizard implementation starts here */
     		/* Fetch basic config options to control the work flow of the Site Setup Wizard */
     		$options = $this->ssw_fetch_config_options();
     			$site_address_bucket = $options['site_address_bucket'];
@@ -699,7 +699,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				    }
 					include(SSW_PLUGIN_DIR.'wizard/step3.php');
 				}
-				
+
 				else if($ssw_next_stage =='ssw_step4') {
 					/* Wordpress Security function wp_nonce to avoid execution of same function/orject multiple times */
 					if (wp_verify_nonce($_POST['step2_nonce'], 'step2_action') ){
@@ -716,7 +716,7 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				    }
 					include(SSW_PLUGIN_DIR.'wizard/step4.php');
 				}
-				
+
 				else if($ssw_next_stage == 'ssw_finish') {
 					/* Wordpress Security function wp_nonce to avoid execution of same function/orject multiple times */
 					if (wp_verify_nonce($_POST['step4_nonce'], 'step4_action') ){
