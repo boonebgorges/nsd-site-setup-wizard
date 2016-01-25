@@ -630,18 +630,18 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 				$plugins_list = $plugin_options['plugins_list'];
 
     		if ( $current_user_role == $ssw_not_available ) {
-    			echo 'Apologies but Alumni\'s do not have access to create new sites using this service at NYU. 
+			echo 'Apologies but Alumni\'s do not have access to create new sites using this service at NYU.
     				If you believe this is by error, please contact askit@nyu.edu';
     		}
     		else {
 	    		$ssw_main_table = $this->ssw_main_table();
-				
+
 				/* Cancel current site setup Wizard Process and restart it */
 				if( $_REQUEST['ssw_cancel'] == true )
 				{
 					$wpdb->query( 'DELETE FROM '.$ssw_main_table.' WHERE user_id = '.$current_user_id.' and wizard_completed = false' );
-                    	$this->ssw_log_sql_error($wpdb->last_error);
-					
+			$this->ssw_log_sql_error($wpdb->last_error);
+
 					// $wpdb->delete ($ssw_main_table, array('user_id'=>$current_user_id));
 					echo 'Let\'s Create a new site again!';
 				}
@@ -660,6 +660,8 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 					}
 					*/
 				}
+				*/
+
 				/* Move to the next step using this POST variable "ssw_next_stage" */
 				if( $_POST['ssw_next_stage'] != '' && $_POST['ssw_cancel'] != true ) {
 					$ssw_next_stage = $_POST['ssw_next_stage'];
