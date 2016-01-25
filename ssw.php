@@ -666,9 +666,9 @@ if(!class_exists('Site_Setup_Wizard_NSD')) {
 
 				/* Display all forms based on the "ssw_next_stage" POST variable */
 				echo '<form action="'.$_SERVER['REQUEST_URI'].'" method="POST" id="ssw-steps" name="ssw-steps">';
-	         
+
 				if($ssw_next_stage == '' || $ssw_next_stage =='ssw_step1') {
-					include(SSW_PLUGIN_DIR.'wizard/step1.php');                    
+					include(SSW_PLUGIN_DIR.'wizard/step1.php');
 				}
 
 				else if($ssw_next_stage =='ssw_step2') {
